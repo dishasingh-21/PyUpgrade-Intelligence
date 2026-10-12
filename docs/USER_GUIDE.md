@@ -18,10 +18,8 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
-That's the whole setup for using it standalone. For the BOSS plugin specifically, see [`BOSS_SUBMISSION.md`](../BOSS_SUBMISSION.md)'s build/install steps.
-
 ---
-## 2. Standalone: via the CLI
+## 2. Via the CLI
 
 Below is an example command:
 ```bash
@@ -68,7 +66,7 @@ python engine/cli.py changes django 4.2 5.0 --type BODY_CHANGED
 `--enriched` costs more (it reads real source files for code snippets and diff text). Use plain `affected` for a quick pass, `--enriched` when you actually need to see what changed.
 
 ---
-## 3. Standalone: as an MCP server
+## 3. As an MCP server
 The same engine runs as an MCP server, usable from any MCP client.
 
 **Test it with the MCP Inspector** (a browser-based tool for calling MCP servers directly, useful for verifying it works before wiring it into any client):
@@ -115,17 +113,3 @@ for e.g.,
 ```bash
 python engine/cli.py check livekit-agents 1.5.1 1.8.1 --repo path/to/project --package livekit
 ```
-
----
-## 6. Inside BOSS Environment
-Once the plugin's built and installed(refer [`BOSS_SUBMISSION.md`](../BOSS_SUBMISSION.md)) (**Toolbox → From File**, selecting the built JAR), enable its tools from **Toolbox → MCP**. Seven tools appear, each prefixed `pyupgrade_`:
- 
-`pyupgrade_check`, `pyupgrade_warm_cache`, `pyupgrade_get_breaking_changes`, `pyupgrade_get_usage`, `pyupgrade_get_affected_files`, `pyupgrade_get_config_diff`, `pyupgrade_list_cached_frameworks`.
-
-With an agent attached, just ask:
-
-for e.g.,
-
-> "Is it safe to upgrade Django from 4.2 to 5.0 for this project?"
- 
-The agent selects and sequences the right tools on its own. Each tool's own description tells it when to reach for `pyupgrade_warm_cache` first, on a framework/version pair it hasn't checked yet in this session, so the real check lands on an already-cached, fast path rather than paying for a first-time build inside a single, time-limited call. If you want more detailed answer than the summary, ask for it directly: "show me the actual code that will break" pulls the agent toward the enriched, code snippet version of the results.
